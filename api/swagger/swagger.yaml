@@ -1,0 +1,179 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: API de Notificação
+  description: Notificação de pedidos e orçamentos
+host: localhost:8010
+basePath: /api/v1
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /notificacoes/pedidos/solicitacao:
+    post:
+      summary: Notificação de solicitação
+      description: 'Notifica o atacadista com os dados do pedido.'
+      operationId: solicitarPedido
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SolicitacaoPedidoBodyPost'
+      tags:
+        - Notificacao            
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/SucessResponse'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"   
+      x-swagger-router-controller: "Notificacao"
+  /notificacoes/pedidos/orcamento:
+    post:
+      summary: Notificação de Orçamento
+      description: 'Notifica o logista com os dados do orçamento'
+      operationId: enviarOrcamento
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/EnvioOrcamentoBodyPost'
+      tags:
+        - Notificacao              
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/SucessResponse'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"   
+      x-swagger-router-controller: "Notificacao"
+  /notificacoes/pedidos/aprova:
+    post:
+      summary: Notificação de confirmação
+      description: 'Notifica a confirmação do pedido'
+      operationId: aprovarPedido
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/AprovaReprovaPedidoBodyPost'
+      tags:
+        - Notificacao    
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/SucessResponse'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"     
+      x-swagger-router-controller: "Notificacao"            
+  /notificacoes/pedidos/reprova:
+    post:
+      summary: Notificação de cancelamento
+      description: 'Notifica o cancelamento do pedido'
+      operationId: reprovarPedido
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/AprovaReprovaPedidoBodyPost'
+      tags:
+        - Notificacao
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/SucessResponse'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"  
+      x-swagger-router-controller: "Notificacao"            
+  /notificacoes/pedidos/situacao:
+    post:
+      summary: Notificação de Situação  
+      description: 'Notifica a situação do pedido'
+      operationId: statusPedido
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SituacaoPedidoBodyPost'
+      tags:
+        - Notificacao            
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/SucessResponse'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"       
+      x-swagger-router-controller: "Notificacao"            
+definitions:
+  SucessResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string   
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  SolicitacaoPedidoBodyPost:
+    type: object
+    properties:
+      codigo:
+        type: integer
+        description: código identificador do pedido
+      quantidade:
+        type: integer
+        description: quantidade do pedido
+      observacao:
+        type: string
+        description: observações do pedido
+  EnvioOrcamentoBodyPost:
+    type: object
+    properties:
+      numero:
+        type: integer
+        description: número do orçamento
+      data:
+        type: string
+        format: date
+        description: data de entrega do pedido
+  AprovaReprovaPedidoBodyPost:
+    type: object
+    properties:
+      numero:
+        type: integer
+        description: número do orçamento
+  SituacaoPedidoBodyPost:
+    type: object
+    properties:
+      numero:
+        type: integer
+        description: número do orçamento 
+      estado:
+        type: string
+        description: Estado que o pedido se encontra
