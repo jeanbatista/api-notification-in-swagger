@@ -29,23 +29,29 @@ paths:
         "200":
           description: Success
           schema:
-            $ref: '#/definitions/SucessResponse'
+            $ref: '#/definitions/SolicitacaoPedidoResponse'
         default:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"   
       x-swagger-router-controller: "Notificacao"
-  /notificacoes/pedidos/orcamento:
+  /notificacoes/pedidos/orcamento/{num}/entrega/{data}/envio:
     post:
       summary: Notificação de Orçamento
       description: 'Notifica o logista com os dados do orçamento'
       operationId: enviarOrcamento
       parameters:
-        - in: body
-          name: body
+        - name: num
+          in: path
+          description: Número do orçamento
           required: true
-          schema:
-            $ref: '#/definitions/EnvioOrcamentoBodyPost'
+          type: integer
+        - name: data
+          in: path
+          description: Data entrega do orçamento
+          required: true
+          type: string
+          format: date
       tags:
         - Notificacao              
       responses:
@@ -58,17 +64,17 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"   
       x-swagger-router-controller: "Notificacao"
-  /notificacoes/pedidos/aprova:
+  /notificacoes/pedidos/orcamento/{num}/aprova:
     post:
       summary: Notificação de confirmação
       description: 'Notifica a confirmação do pedido'
       operationId: aprovarPedido
       parameters:
-        - in: body
-          name: body
+        - name: num
+          in: path
+          description: Número do orçamento
           required: true
-          schema:
-            $ref: '#/definitions/AprovaReprovaPedidoBodyPost'
+          type: integer
       tags:
         - Notificacao    
       responses:
@@ -81,17 +87,17 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"     
       x-swagger-router-controller: "Notificacao"            
-  /notificacoes/pedidos/reprova:
+  /notificacoes/pedidos/orcamento/{num}/reprova:
     post:
       summary: Notificação de cancelamento
       description: 'Notifica o cancelamento do pedido'
       operationId: reprovarPedido
       parameters:
-        - in: body
-          name: body
+        - name: num
+          in: path
+          description: Número do orçamento
           required: true
-          schema:
-            $ref: '#/definitions/AprovaReprovaPedidoBodyPost'
+          type: integer
       tags:
         - Notificacao
       responses:
@@ -104,17 +110,22 @@ paths:
           schema:
             $ref: "#/definitions/ErrorResponse"  
       x-swagger-router-controller: "Notificacao"            
-  /notificacoes/pedidos/situacao:
+  /notificacoes/pedidos/orcamento/{num}/situacao/{estado}/envio:
     post:
       summary: Notificação de Situação  
       description: 'Notifica a situação do pedido'
-      operationId: statusPedido
+      operationId: verificarSituacaoPedido
       parameters:
-        - in: body
-          name: body
+        - name: num
+          in: path
+          description: Número do orçamento
           required: true
-          schema:
-            $ref: '#/definitions/SituacaoPedidoBodyPost'
+          type: integer
+        - name: estado
+          in: path
+          description: Estado em que o orçamento se encontra
+          required: true
+          type: string
       tags:
         - Notificacao            
       responses:
@@ -140,6 +151,16 @@ definitions:
     properties:
       message:
         type: string
+  SolicitacaoPedidoResponse:
+    required:
+      - orcamento
+    properties:
+      orcamento:
+        description: Número do orçamento
+        type: integer
+      link:
+        description: Hypermedia para envio de orçamento      
+        type: string
   SolicitacaoPedidoBodyPost:
     type: object
     properties:
@@ -152,28 +173,3 @@ definitions:
       observacao:
         type: string
         description: observações do pedido
-  EnvioOrcamentoBodyPost:
-    type: object
-    properties:
-      numero:
-        type: integer
-        description: número do orçamento
-      data:
-        type: string
-        format: date
-        description: data de entrega do pedido
-  AprovaReprovaPedidoBodyPost:
-    type: object
-    properties:
-      numero:
-        type: integer
-        description: número do orçamento
-  SituacaoPedidoBodyPost:
-    type: object
-    properties:
-      numero:
-        type: integer
-        description: número do orçamento 
-      estado:
-        type: string
-        description: Estado que o pedido se encontra
