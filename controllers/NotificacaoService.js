@@ -7,8 +7,11 @@ exports.solicitarPedido = function(args, res, next) {
     res.setHeader('Content-Type', 'application/json');
 
     let obj = {
-        orcamento: args.codigo,
-        link: `http://localhost:8081/api/v1/notificacoes/pedidos/orcamento/${args.codigo}/entrega/2018-10-12/envio`
+        message: `Pedido ${args.codigo} solicitado com sucesso!`,
+        link: {
+            url: "http://localhost:4000/v1/orcamentos/envio",
+            descricao: "url para envio de orçamento"
+        }
     };
 
     model.solicitarPedido(obj, (results) => {
@@ -21,11 +24,11 @@ exports.enviarOrcamento = function(args, res, next) {
     res.setHeader('Content-Type', 'application/json');
 
     let obj = {
-        orcamento: args.num.value,
-        entrega: args.data.value,
+        orcamento: args.numero,
+        dataEntrega: args.entrega,
         links: [
-            { aprovar: `http://localhost:8081/api/v1/notificacoes/pedidos/orcamento/${args.num.value}/aprova` },
-            { reprovar: `http://localhost:8081/api/v1/notificacoes/pedidos/orcamento/${args.num.value}/reprova` }
+            { aprovar: "http://localhost:4000/v1/orcamentos/aprovado" },
+            { reprovar: "http://localhost:4000/v1/orcamentos/rejeitado" }
         ]
     }
 
@@ -39,7 +42,11 @@ exports.aprovarPedido = function(args, res, next) {
     res.setHeader('Content-Type', 'application/json');
 
     let obj = {
-        message: `Orçamento: ${args.num.value} foi aprovado com êxito`
+        message: `Orçamento: ${args.numero} aprovado!`,
+        link: {
+            url: `http://localhost:4000/v1/pedidos/situacao/${args.numero}`,
+            descricao: "url para verificar situação do pedido."
+        }
     };
     
     model.aprovarPedido(obj, (results) => {
@@ -52,7 +59,7 @@ exports.reprovarPedido = function(args, res, next) {
     res.setHeader('Content-Type', 'application/json');
 
     let obj = {
-        message: `Orçamento ${args.num.value} foi reprovado com êxito.`
+        message: `Orçamento: ${args.numero} cancelado!`
     };
 
     model.reprovarPedido(obj, (results) => {
@@ -65,8 +72,7 @@ exports.verificarSituacaoPedido = function(args, res, next) {
     res.setHeader('Content-Type', 'application/json');
 
     let obj = {
-        orcamento: args.num.value,
-        situacao: args.estado.value
+        message: `Pedido: ${args.numero}, situacao: ${args.situacao}`
     };
     
     model.verificarSituacaoPedido(obj, (results) => {
